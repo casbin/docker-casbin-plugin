@@ -19,16 +19,12 @@ const (
 
 var (
 	casbinConfig = flag.String("config", "casbin.conf", "Specifies the Casbin configuration file")
-	Version      string
-	Build        string
 )
 
 func main() {
-	log.Println("Plugin Version:", Version, "Build: ", Build)
-
 	// Parse command line options.
 	flag.Parse()
-	log.Println("Casbin config:", casbinConfig)
+	log.Println("Casbin config:", *casbinConfig)
 
 	// Create Casbin authorization plugin
 	plugin, err := newPlugin(*casbinConfig)
