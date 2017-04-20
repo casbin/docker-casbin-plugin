@@ -18,3 +18,11 @@ install:
 
 clean:
 	rm -f casbin-authz-plugin
+
+uninstall:
+    rm -f ${LIBDIR}/casbin-authz-plugin.service
+    rm -f ${LIBDIR}/casbin-authz-plugin.socket
+    rm -f ${BINDIR}/casbin-authz-plugin
+    rm -f ${BINDIR}/casbin.conf
+    rm -f ${BINDIR}/basic_model.conf
+    rm -f ${BINDIR}/basic_policy.csv
