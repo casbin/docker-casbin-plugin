@@ -1,7 +1,7 @@
-.PHONY: all binary install clean
+.PHONY: all binary install clean uninstall
 
 LIBDIR=${DESTDIR}/lib/systemd/system
-BINDIR=${DESTDIR}/usr/lib/docker/
+BINDIR=${DESTDIR}/usr/lib/docker
 
 all: binary
 
@@ -20,9 +20,9 @@ clean:
 	rm -f casbin-authz-plugin
 
 uninstall:
-    rm -f ${LIBDIR}/casbin-authz-plugin.service
-    rm -f ${LIBDIR}/casbin-authz-plugin.socket
-    rm -f ${BINDIR}/casbin-authz-plugin
-    rm -f ${BINDIR}/casbin.conf
-    rm -f ${BINDIR}/basic_model.conf
-    rm -f ${BINDIR}/basic_policy.csv
+	rm -f ${LIBDIR}/casbin-authz-plugin.service
+	rm -f ${LIBDIR}/casbin-authz-plugin.socket
+	rm -f ${BINDIR}/casbin-authz-plugin
+	rm -f ${BINDIR}/casbin.conf
+	rm -f ${BINDIR}/basic_model.conf
+	rm -f ${BINDIR}/basic_policy.csv
