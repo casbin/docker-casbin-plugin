@@ -14,9 +14,18 @@ So Casbin plugin helps you decide whether ``GET`` can be performed on ``/v1.27/i
 p, /v1.27/images/json, GET
 ```
 
-The above policy grants anyone to perform ``GET`` on ``/v1.27/images/json``.
+The above policy grants anyone to perform ``GET`` on ``/v1.27/images/json``, and deny all other requests. The response should be like below:
 
-For more information about the casbin.conf, Casbin model or more advanced Casbin policy usage, please refer to: https://github.com/hsluoyz/casbin
+```bash
+$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hello-world         latest              48b5124b2768        3 months ago        1.84 kB
+
+$ docker info
+Error response from daemon: authorization denied by plugin casbin-authz-plugin: Access denied by casbin plugin
+```
+
+For more information about the casbin.conf, Casbin model or more advanced Casbin policy usage like RBAC, ABAC, etc., please refer to: https://github.com/hsluoyz/casbin
 
 ## Build
 
