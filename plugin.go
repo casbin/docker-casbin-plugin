@@ -36,8 +36,16 @@ func (plugin *CasbinAuthZPlugin) AuthZReq(req authorization.Request) authorizati
 	reqURI, _ := url.QueryUnescape(req.RequestURI)
 	reqURL, _ := url.ParseRequestURI(reqURI)
 
-	log.Println("obj:", reqURL, ", act:", req.RequestMethod)
-	return authorization.Response{Allow: true}
+	obj := reqURL.String()
+	act := req.RequestMethod
+
+	if plugin.enforcer.Enforce(obj, act) {
+		log.Println("obj:", obj, ", act:", act, "res: allowed")
+		return authorization.Response{Allow: true}
+	} else {
+		log.Println("obj:", obj, ", act:", act, "res: denied")
+		return authorization.Response{Allow: false, Msg: "Access denied by casbin plugin"}
+	}
 }
 
 // Authorizes the docker client response.
