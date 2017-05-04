@@ -1,4 +1,4 @@
-# Docker RBAC & ABAC Authorization Plugin based on Casbin [![GoDoc](https://godoc.org/github.com/hsluoyz/casbin-authz-plugin?status.svg)](https://godoc.org/github.com/hsluoyz/casbin-authz-plugin)
+# Docker RBAC & ABAC Authorization Plugin based on Casbin [![GoDoc](https://godoc.org/github.com/casbin/casbin-authz-plugin?status.svg)](https://godoc.org/github.com/hsluoyz/casbin-authz-plugin)
 
 This plugin controls the access to Docker commands based on authorization policy. The functionality of authorization is provided by [Casbin](https://github.com/hsluoyz/casbin-authz-plugin). Since Docker doesn't perform authentication by now, there's no user information when executing Docker commands. The access that Casbin plugin can control is actually what HTTP method can be performed on what URL path.
 
@@ -30,8 +30,8 @@ For more information about the casbin.conf, Casbin model or more advanced Casbin
 ## Build
 
 ```bash
-$ go get github.com/hsluoyz/casbin-authz-plugin
-$ cd $GOPATH/src/github.com/hsluoyz/casbin-authz-plugin
+$ go get github.com/casbin/casbin-authz-plugin
+$ cd $GOPATH/src/github.com/casbin/casbin-authz-plugin
 $ make
 $ sudo make install
 ```
@@ -97,7 +97,7 @@ $ make uninstall
 
 If you have any issues or feature requests, please feel free to contact me at:
 - https://github.com/hsluoyz/casbin/issues
-- hsluoyz@gmail.com (Yang Luo's email, if your issue needs to be kept private, please contact me via this mail)
+- hsluoyz@gmail.com
 
 ## License
 
