@@ -7,7 +7,7 @@ package main
 
 import (
 	"github.com/docker/go-plugins-helpers/authorization"
-	"github.com/hsluoyz/casbin/api"
+	"github.com/hsluoyz/casbin"
 	"log"
 	"net/url"
 )
@@ -15,15 +15,14 @@ import (
 // Casbin Authorization Plugin struct definition
 type CasbinAuthZPlugin struct {
 	// Casbin enforcer
-	enforcer *api.Enforcer
+	enforcer *casbin.Enforcer
 }
 
 // Create a new casbin authorization plugin
 func newPlugin(casbinConfig string) (*CasbinAuthZPlugin, error) {
 	plugin := &CasbinAuthZPlugin{}
 
-	plugin.enforcer = &api.Enforcer{}
-	plugin.enforcer.InitWithConfig(casbinConfig)
+	plugin.enforcer = casbin.NewEnforcer(casbinConfig)
 
 	return plugin, nil
 }
