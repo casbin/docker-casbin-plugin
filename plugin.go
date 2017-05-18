@@ -1,13 +1,13 @@
 // Docker RBAC & ABAC Authorization Plugin based on Casbin.
 // Allows only authorized Docker operations based on access control policy.
-// AUTHOR: Yang Luo <hsluoyz@qq.com>
-// Powered by Casbin: https://github.com/hsluoyz/casbin
+// AUTHOR: Yang Luo <hsluoyz@gmail.com>
+// Powered by Casbin: https://github.com/casbin/casbin
 
 package main
 
 import (
 	"github.com/docker/go-plugins-helpers/authorization"
-	"github.com/hsluoyz/casbin"
+	"github.com/casbin/casbin"
 	"log"
 	"net/url"
 )
