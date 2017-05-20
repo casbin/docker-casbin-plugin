@@ -6,19 +6,19 @@
 package main
 
 import (
-	"github.com/docker/go-plugins-helpers/authorization"
 	"github.com/casbin/casbin"
+	"github.com/docker/go-plugins-helpers/authorization"
 	"log"
 	"net/url"
 )
 
-// Casbin Authorization Plugin struct definition
+// CasbinAuthZPlugin is the Casbin Authorization Plugin
 type CasbinAuthZPlugin struct {
 	// Casbin enforcer
 	enforcer *casbin.Enforcer
 }
 
-// Create a new casbin authorization plugin
+// newPlugin creates a new casbin authorization plugin
 func newPlugin(casbinConfig string) (*CasbinAuthZPlugin, error) {
 	plugin := &CasbinAuthZPlugin{}
 
@@ -27,7 +27,7 @@ func newPlugin(casbinConfig string) (*CasbinAuthZPlugin, error) {
 	return plugin, nil
 }
 
-// Authorizes the docker client command.
+// AuthZReq authorizes the docker client command.
 // The command is allowed only if it matches a Casbin policy rule.
 // Otherwise, the request is denied!
 func (plugin *CasbinAuthZPlugin) AuthZReq(req authorization.Request) authorization.Response {
@@ -41,13 +41,13 @@ func (plugin *CasbinAuthZPlugin) AuthZReq(req authorization.Request) authorizati
 	if plugin.enforcer.Enforce(obj, act) {
 		log.Println("obj:", obj, ", act:", act, "res: allowed")
 		return authorization.Response{Allow: true}
-	} else {
-		log.Println("obj:", obj, ", act:", act, "res: denied")
-		return authorization.Response{Allow: false, Msg: "Access denied by casbin plugin"}
 	}
+
+	log.Println("obj:", obj, ", act:", act, "res: denied")
+	return authorization.Response{Allow: false, Msg: "Access denied by casbin plugin"}
 }
 
-// Authorizes the docker client response.
+// AuthZRes authorizes the docker client response.
 // All responses are allowed by default.
 func (plugin *CasbinAuthZPlugin) AuthZRes(req authorization.Request) authorization.Response {
 	// Allowed by default.
