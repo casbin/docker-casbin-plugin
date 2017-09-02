@@ -18,16 +18,18 @@ const (
 )
 
 var (
-	casbinConfig = flag.String("config", "casbin.conf", "Specifies the Casbin configuration file")
+	casbinModel = flag.String("model", "examples/basic_model.conf", "Specifies the Casbin model file")
+	casbinPolicy = flag.String("policy", "examples/basic_policy.csv", "Specifies the Casbin policy file")
 )
 
 func main() {
 	// Parse command line options.
 	flag.Parse()
-	log.Println("Casbin config:", *casbinConfig)
+	log.Println("Casbin model:", *casbinModel)
+	log.Println("Casbin policy:", *casbinPolicy)
 
 	// Create Casbin authorization plugin
-	plugin, err := newPlugin(*casbinConfig)
+	plugin, err := newPlugin(*casbinModel, *casbinPolicy)
 	if err != nil {
 		log.Fatal(err)
 	}

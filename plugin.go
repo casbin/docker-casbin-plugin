@@ -19,10 +19,10 @@ type CasbinAuthZPlugin struct {
 }
 
 // newPlugin creates a new casbin authorization plugin
-func newPlugin(casbinConfig string) (*CasbinAuthZPlugin, error) {
+func newPlugin(casbinModel string, casbinPolicy string) (*CasbinAuthZPlugin, error) {
 	plugin := &CasbinAuthZPlugin{}
 
-	plugin.enforcer = casbin.NewEnforcer(casbinConfig)
+	plugin.enforcer = casbin.NewEnforcer(casbinModel, casbinPolicy)
 
 	return plugin, nil
 }
