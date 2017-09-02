@@ -25,7 +25,30 @@ $ docker info
 Error response from daemon: authorization denied by plugin casbin-authz-plugin: Access denied by casbin plugin
 ```
 
-For more information about the Casbin model or more advanced Casbin policy usage like RBAC, ABAC, etc., please refer to: https://github.com/casbin/casbin
+The built-in Casbin model is:
+
+```ini
+[request_definition]
+r = obj, act
+
+[policy_definition]
+p = obj, act
+
+[policy_effect]
+e = some(where (p.eft == allow))
+
+[matchers]
+m = r.obj == p.obj && r.act == p.act
+```
+
+The built-in Casbin policy is:
+
+```csv
+p, /_ping, GET
+p, /v1.27/images/json, GET
+```
+
+For more information about the Casbin model and policy usage like RBAC, ABAC, please refer to: https://github.com/casbin/casbin
 
 ## Build
 
