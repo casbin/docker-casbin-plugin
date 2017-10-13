@@ -7,10 +7,12 @@ package main
 
 import (
 	"flag"
-	"github.com/docker/go-plugins-helpers/authorization"
 	"log"
+	"os"
 	"os/user"
 	"strconv"
+
+	"github.com/docker/go-plugins-helpers/authorization"
 )
 
 const (
@@ -25,6 +27,8 @@ var (
 func main() {
 	// Parse command line options.
 	flag.Parse()
+	pwd, _ := os.Getwd()
+	log.Println("Current directory:", pwd)
 	log.Println("Casbin model:", *casbinModel)
 	log.Println("Casbin policy:", *casbinPolicy)
 
