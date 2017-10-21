@@ -1,5 +1,7 @@
 # Docker RBAC & ABAC Authorization Plugin based on Casbin [![Go Report Card](https://goreportcard.com/badge/github.com/casbin/casbin-authz-plugin)](https://goreportcard.com/report/github.com/casbin/casbin-authz-plugin) [![Build Status](https://travis-ci.org/casbin/casbin.svg?branch=master)](https://travis-ci.org/casbin/casbin) [![GoDoc](https://godoc.org/github.com/casbin/casbin-authz-plugin?status.svg)](https://godoc.org/github.com/casbin/casbin-authz-plugin)
 
+# TAKE NOTE: the instructions below is valid only for LINUX Host OS
+
 This plugin controls the access to Docker commands based on authorization policy. The functionality of authorization is provided by [Casbin](https://github.com/casbin/casbin). Since Docker doesn't perform authentication by now, there's no user information when executing Docker commands. The access that Casbin plugin can control is actually what HTTP method can be performed on what URL path.
 
 For example, when you run ``docker images`` command, the underlying request is really like:
@@ -50,6 +52,14 @@ p, /v1.27/images/json, GET
 
 For more information about the Casbin model and policy usage like RBAC, ABAC, please refer to: https://github.com/casbin/casbin
 
+## For non-golang users
+```bash
+$ apt install golang-go  # install go language
+$ export GOPATH=$HOME
+```
+- The installation command above is for Ubuntu, other distros may have different commands for installing go
+- The export can be changed according to your satisfaction
+
 ## Build
 
 ```bash
@@ -65,13 +75,24 @@ $ sudo make install
 
 ```bash
 $ cd /usr/lib/docker
+$ mkdir examples
+$ cp basic_model.conf examples/.
+$ cp basic_policy.csv examples/.
 $ ./casbin-authz-plugin
 ```
 
-See whether the plugin starts correctly:
-
-```bash
-$ journalctl -xe -u casbin-authz-plugin -f
+Below should be an example of display when command above is run:
+```
+2017/10/21 03:47:39 Current directory: /usr/lib/docker
+2017/10/21 03:47:39 Casbin model: examples/basic_model.conf
+2017/10/21 03:47:39 Casbin policy: examples/basic_policy.csv
+2017/10/21 03:47:39 [Model:]
+2017/10/21 03:47:39 p.p: obj, act
+2017/10/21 03:47:39 e.e: some(where (p_eft == allow))
+2017/10/21 03:47:39 m.m: r_obj == p_obj && r_act == p_act
+2017/10/21 03:47:39 r.r: obj, act
+2017/10/21 03:47:39 [Policy:]
+2017/10/21 03:47:39 [p :  obj, act :  [[/_ping GET] [/v1.27/images/json GET]]]
 ```
 
 ## Enable the authorization plugin on docker engine
@@ -80,20 +101,20 @@ $ journalctl -xe -u casbin-authz-plugin -f
 ```bash
 $ systemctl status casbin-authz-plugin
 
-Loaded: loaded (/lib/systemd/system/casbin-authz-plugin.service; disabled; vendor preset: enabled)
-   Active: active (running) since Sun 2017-10-15 14:21:35 UTC; 5 days ago
- Main PID: 64275 (casbin-authz-pl)
-   CGroup: /system.slice/casbin-authz-plugin.service
-           └─64275 /usr/lib/docker/casbin-authz-plugin
+● casbin-authz-plugin.service - Docker RBAC & ABAC Authorization Plugin based on Casbin
+   Loaded: loaded (/lib/systemd/system/casbin-authz-plugin.service; disabled; vendor preset: enabled)
+   Active: inactive (dead)
 ```
 - You can see the directory on the **Loaded** label
 
-### Step-2: Edit the **WorkingDirectory** of th plugin's systemd service
+### Step-2: Add the **WorkingDirectory** of th plugin's systemd service
 ```bash
 $ vi /lib/systemd/system/casbin-authz-plugin.service
+
+[Service]
+WorkingDirectory=/usr/local/go/bin/src/github.com/casbin/casbin-authz-plugin
 ```
-- Make `/usr/local/go/bin/src/github.com/casbin/casbin-authz-plugin` as the value
-- If the service directory above is different than the one that returned from the `systemctl status casbin-authz-plugin` please use the latter 
+- If the service directory above is different than the one that returned from the `systemctl status casbin-authz-plugin`, please use the latter 
 
 ### Step-3: Run the plugin as a systemd service
 
@@ -118,26 +139,36 @@ $ systemctl status docker
 
 ### Step-5: Edit the **Execstart** of th plugin's systemd service
 ```
+$ vi /etc/systemd/system/docker.service
+
 [Service]
 ExecStart=
-ExecStart=/usr/bin/docker daemon -H tcp://0.0.0.0:2376 --authorization-plugin=casbin-authz-plugin
+ExecStart=/usr/bin/docker daemon --authorization-plugin=casbin-authz-plugin -H tcp://0.0.0.0:2376
 ```
+- If the service directory above is different than the one that returned from the `systemctl status docker`,  please use the latter 
 - Just add `--authorization-plugin=casbin-authz-plugin` if there are more options on the pre-defined `ExecStart` please retain them
 
-### Step-6: Add authorization plugin to the docker engine configuration 
-
-Please add the following cmdline flag to your docker engine (e.g. ExecStart line ``/lib/systemd/system/docker.service``)
-
-```bash
---authorization-plugin casbin-authz-plugin
-```
-
-### Step-7: Restart docker engine
+### Step-6: Restart docker engine
 
 ```bash
 $ systemctl daemon-reload
 $ systemctl restart docker
 ```
+
+### Step-7 Activate the plugin logs:
+
+```bash
+$ journalctl -xe -u casbin-authz-plugin -f
+```
+
+### Step-8 Test now:
+
+```bash
+$ docker images
+$ docker ps
+$ docker info
+```
+- Check the logs for more confirmation
 
 ## Stop and uninstall the plugin as a systemd service
 
