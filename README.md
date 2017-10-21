@@ -55,7 +55,8 @@ For more information about the Casbin model and policy usage like RBAC, ABAC, pl
 ## For non-golang users
 ```bash
 $ apt install golang-go  # install go language
-$ export GOPATH=$HOME
+$ mkdir /usr/local/go
+$ export GOPATH=/usr/local/go
 ```
 - The installation command above is for Ubuntu, other distros may have different commands for installing go
 - The export can be changed according to your satisfaction
@@ -112,7 +113,7 @@ $ systemctl status casbin-authz-plugin
 $ vi /lib/systemd/system/casbin-authz-plugin.service
 
 [Service]
-WorkingDirectory=/usr/local/go/bin/src/github.com/casbin/casbin-authz-plugin
+WorkingDirectory=/usr/localgo/src/github.com/casbin/casbin-authz-plugin
 ```
 - If the service directory above is different than the one that returned from the `systemctl status casbin-authz-plugin`, please use the latter 
 
@@ -124,22 +125,9 @@ $ systemctl enable casbin-authz-plugin
 $ systemctl start casbin-authz-plugin
 ```
 
-### Step-4: Determine where the docker service is located
-```bash
-$ systemctl status docker
-
- docker.service
-   Loaded: loaded (/etc/systemd/system/docker.service; enabled; vendor preset: enabled)
-   Active: active (running) since Sun 2017-10-15 14:21:35 UTC; 5 days ago
- Main PID: 64276 (dockerd)
-   CGroup: /system.slice/docker.service
-           ├─  808 docker-containerd-shim a795cd15bbf1e314f45822047b00b43f8848ebfe26091c038f9278eda2f5b306 /var/run/docker/libcontainerd
-           ├─64276 dockerd -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock --storage-driver aufs --tlsverify --tlscacert /etc/docke
+### Step-4: Edit the **Execstart** of th plugin's systemd service
 ```
-
-### Step-5: Edit the **Execstart** of th plugin's systemd service
-```
-$ vi /etc/systemd/system/docker.service
+$ systemctl edit docker
 
 [Service]
 ExecStart=
@@ -148,27 +136,46 @@ ExecStart=/usr/bin/docker daemon --authorization-plugin=casbin-authz-plugin -H t
 - If the service directory above is different than the one that returned from the `systemctl status docker`,  please use the latter 
 - Just add `--authorization-plugin=casbin-authz-plugin` if there are more options on the pre-defined `ExecStart` please retain them
 
-### Step-6: Restart docker engine
+### Step-5: Restart docker engine
 
 ```bash
 $ systemctl daemon-reload
 $ systemctl restart docker
 ```
 
-### Step-7 Activate the plugin logs:
+### Step-6 Activate the plugin logs:
 
 ```bash
 $ journalctl -xe -u casbin-authz-plugin -f
 ```
 
-### Step-8 Test now:
+### STEP-7 Do a quick test
+```bash
+$ docker images
+```
+- if `docker images` is denied, simply proceed to Step-8 for the solution
+
+### Step-8 Changing the policy
+```bash
+$ vi $GOPATH/src/github.com/casbin/casbin-authz-plugin/examples/basic_policy.csv
+
+p, /v1.29/images/json, GET
+
+$ systemctl restart casbin-authz-plugin
+```
+- take note that **versioning** is also included on the authorization. The given policy states **/v1.27/**. So edit the version in `examples/basic_policy.csv` that the docker client is throwing which is shown in `journalctl` like `obj: /v1.29/images/json, act: GET res: denied`
+- you can change the `$GOPATH` to the directory where you put the plugin from `go get`
+- Check the logs for more confirmation
+
+### Step-9 Test again:
 
 ```bash
 $ docker images
 $ docker ps
 $ docker info
 ```
-- Check the logs for more confirmation
+- If `docker images` is still denied please check STEP-8 more carefully
+- These should smoothly enable 
 
 ## Stop and uninstall the plugin as a systemd service
 
@@ -184,6 +191,7 @@ $ systemctl disable casbin-authz-plugin
 Uninstall the plugin service:
 
 ```bash
+$ cd $GOPATH/src/github.com/casbin/casbin-authz-plugin
 $ make uninstall
 ```
 
