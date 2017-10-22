@@ -132,7 +132,7 @@ $ systemctl edit docker
 
 [Service]
 ExecStart=
-ExecStart=/usr/bin/docker daemon --authorization-plugin=casbin-authz-plugin -H tcp://0.0.0.0:2376
+ExecStart=/usr/bin/docker daemon -H tcp://0.0.0.0:2376 --authorization-plugin=casbin-authz-plugin
 ```
 - If the service directory above is different than the one that returned from the `systemctl status docker`,  please use the latter 
 - Just add `--authorization-plugin=casbin-authz-plugin` if there are more options on the pre-defined `ExecStart` please retain them
@@ -181,6 +181,18 @@ $ docker info
 ## Stop and uninstall the plugin as a systemd service
 
 NOTE: Before doing below, remove the authorization-plugin configuration added above and restart the docker daemon.
+
+Removing the authorization plugin on docker
+
+```bash
+$ systemctl edit docker
+
+#[Service]
+#ExecStart=
+#ExecStart=/usr/bin/docker daemon -H tcp://0.0.0.0:2376 --authorization-plugin=casbin-authz-plugin
+
+$ systemctl restart docker
+```
 
 Stop the plugin service:
 
