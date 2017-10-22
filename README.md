@@ -113,7 +113,7 @@ $ systemctl status casbin-authz-plugin
 $ vi /lib/systemd/system/casbin-authz-plugin.service
 
 [Service]
-WorkingDirectory=/usr/localgo/src/github.com/casbin/casbin-authz-plugin
+WorkingDirectory=/usr/local/go/src/github.com/casbin/casbin-authz-plugin
 ```
 - If the service directory above is different than the one that returned from the `systemctl status casbin-authz-plugin`, please use the latter
 - The `WorkingDirectory` may not be the one given depending on where you put the plugin
