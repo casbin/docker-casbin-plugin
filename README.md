@@ -52,7 +52,7 @@ p, /v1.27/images/json, GET
 
 For more information about the Casbin model and policy usage like RBAC, ABAC, please refer to: https://github.com/casbin/casbin
 
-## For non-golang users
+## For "non-golang developer" users
 ```bash
 $ apt install golang-go  # install go language
 $ mkdir /usr/local/go
