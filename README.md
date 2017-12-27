@@ -113,7 +113,7 @@ $ systemctl status casbin-authz-plugin
 $ vi /lib/systemd/system/casbin-authz-plugin.service
 
 [Service]
-WorkingDirectory=/usr/local/go/src/github.com/casbin/casbin-authz-plugin
+WorkingDirectory=/usr/lib/docker
 ```
 - If the service directory above is different than the one that returned from the `systemctl status casbin-authz-plugin`, please use the latter
 - The `WorkingDirectory` may not be the one given depending on where you put the plugin
@@ -132,7 +132,7 @@ $ systemctl edit docker
 
 [Service]
 ExecStart=
-ExecStart=/usr/bin/docker daemon -H tcp://0.0.0.0:2376 --authorization-plugin=casbin-authz-plugin
+ExecStart=/usr/bin/dockerd --authorization-plugin=casbin-authz-plugin
 ```
 - If the service directory above is different than the one that returned from the `systemctl status docker`,  please use the latter 
 - Just add `--authorization-plugin=casbin-authz-plugin` if there are more options on the pre-defined `ExecStart` please retain them
@@ -158,7 +158,7 @@ $ docker images
 
 ### Step-8 Changing the policy
 ```bash
-$ vi $GOPATH/src/github.com/casbin/casbin-authz-plugin/examples/basic_policy.csv
+$ vi /usr/lib/docker/examples/basic_policy.csv
 
 p, /v1.29/images/json, GET
 
@@ -189,7 +189,7 @@ $ systemctl edit docker
 
 #[Service]
 #ExecStart=
-#ExecStart=/usr/bin/docker daemon -H tcp://0.0.0.0:2376 --authorization-plugin=casbin-authz-plugin
+#ExecStart=/usr/bin/dockerd --authorization-plugin=casbin-authz-plugin
 
 $ systemctl restart docker
 ```
