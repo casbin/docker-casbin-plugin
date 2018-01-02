@@ -6,6 +6,7 @@ Requires=casbin-authz-plugin.socket docker.service
 
 [Service]
 ExecStart=/usr/lib/docker/casbin-authz-plugin
+WorkingDirectory=/usr/lib/docker
 
 [Install]
 WantedBy=multi-user.target
