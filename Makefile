@@ -9,6 +9,7 @@ binary:
 	go build  -o casbin-authz-plugin .
 
 install:
+	mkdir -p ${LIBDIR} ${DESTDIR}
 	install -m 644 systemd/casbin-authz-plugin.service ${LIBDIR}
 	install -m 644 systemd/casbin-authz-plugin.socket ${LIBDIR}
 	install -m 755 casbin-authz-plugin ${BINDIR}
