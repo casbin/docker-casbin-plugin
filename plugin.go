@@ -6,10 +6,11 @@
 package main
 
 import (
-	"github.com/casbin/casbin"
-	"github.com/docker/go-plugins-helpers/authorization"
 	"log"
 	"net/url"
+
+	"github.com/casbin/casbin"
+	"github.com/docker/go-plugins-helpers/authorization"
 )
 
 // CasbinAuthZPlugin is the Casbin Authorization Plugin
