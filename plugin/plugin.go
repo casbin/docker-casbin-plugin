@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package plugin
 
 import (
 	"log"
@@ -29,7 +29,7 @@ type CasbinAuthZPlugin struct {
 }
 
 // newPlugin creates a new casbin authorization plugin
-func newPlugin(casbinModel string, casbinPolicy string) (*CasbinAuthZPlugin, error) {
+func NewPlugin(casbinModel string, casbinPolicy string) (*CasbinAuthZPlugin, error) {
 	plugin := &CasbinAuthZPlugin{}
 
 	plugin.enforcer = casbin.NewEnforcer(casbinModel, casbinPolicy)

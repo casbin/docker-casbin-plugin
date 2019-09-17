@@ -21,6 +21,7 @@ import (
 	"os/user"
 	"strconv"
 
+	"github.com/casbin/casbin-authz-plugin/plugin"
 	"github.com/docker/go-plugins-helpers/authorization"
 )
 
@@ -42,7 +43,7 @@ func main() {
 	log.Println("Casbin policy:", *casbinPolicy)
 
 	// Create Casbin authorization plugin
-	plugin, err := newPlugin(*casbinModel, *casbinPolicy)
+	plugin, err := plugin.NewPlugin(*casbinModel, *casbinPolicy)
 	if err != nil {
 		log.Fatal(err)
 	}
