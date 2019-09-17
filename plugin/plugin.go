@@ -18,7 +18,7 @@ import (
 	"log"
 	"net/url"
 
-	"github.com/casbin/casbin"
+	"github.com/casbin/casbin/v2"
 	"github.com/docker/go-plugins-helpers/authorization"
 )
 
@@ -32,9 +32,10 @@ type CasbinAuthZPlugin struct {
 func NewPlugin(casbinModel string, casbinPolicy string) (*CasbinAuthZPlugin, error) {
 	plugin := &CasbinAuthZPlugin{}
 
-	plugin.enforcer = casbin.NewEnforcer(casbinModel, casbinPolicy)
+	var err error
+	plugin.enforcer, err = casbin.NewEnforcer(casbinModel, casbinPolicy)
 
-	return plugin, nil
+	return plugin, err
 }
 
 // AuthZReq authorizes the docker client command.
@@ -48,7 +49,12 @@ func (plugin *CasbinAuthZPlugin) AuthZReq(req authorization.Request) authorizati
 	obj := reqURL.String()
 	act := req.RequestMethod
 
-	if plugin.enforcer.Enforce(obj, act) {
+	allowed, err := plugin.enforcer.Enforce(obj, act)
+	if err != nil {
+		panic(err)
+	}
+
+	if allowed {
 		log.Println("obj:", obj, ", act:", act, "res: allowed")
 		return authorization.Response{Allow: true}
 	}
